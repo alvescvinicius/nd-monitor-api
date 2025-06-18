@@ -1,0 +1,59 @@
+CREATE TABLE instituicoes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE produtos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  codigo VARCHAR(50) NOT NULL,         -- Exemplo: "KNCR11"
+  descricao VARCHAR(255) NOT NULL,
+  UNIQUE (codigo, descricao)
+);
+
+CREATE TABLE tipos_movimentacao (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL UNIQUE    -- Exemplo: "Rendimento", "Transferência - Liquidação"
+);
+
+CREATE TABLE tipos_entrada_saida (
+  id TINYINT PRIMARY KEY,              -- Pode ser 1 ou 2
+  nome VARCHAR(10) NOT NULL UNIQUE     -- "Credito", "Debito"
+);
+
+CREATE TABLE movimentacoes (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  tipo_entrada_saida_id TINYINT NOT NULL,
+  data DATE NOT NULL,
+  tipo_movimentacao_id INT NOT NULL,
+  produto_id INT NOT NULL,
+  instituicao_id INT NOT NULL,
+  quantidade INT NOT NULL,
+  preco_unitario DECIMAL(15,5) NULL,
+  valor_operacao DECIMAL(15,2) NOT NULL,
+  FOREIGN KEY (tipo_entrada_saida_id) REFERENCES tipos_entrada_saida(id),
+  FOREIGN KEY (tipo_movimentacao_id) REFERENCES tipos_movimentacao(id),
+  FOREIGN KEY (produto_id) REFERENCES produtos(id),
+  FOREIGN KEY (instituicao_id) REFERENCES instituicoes(id),
+  INDEX idx_data (data),
+  INDEX idx_produto (produto_id),
+  INDEX idx_instituicao (instituicao_id),
+  INDEX idx_tipo_entrada_saida (tipo_entrada_saida_id)
+);
+
+INSERT INTO tipos_entrada_saida (id, nome) VALUES (1, 'Credito') 
+ON DUPLICATE KEY UPDATE nome = VALUES(nome);
+
+INSERT INTO tipos_entrada_saida (id, nome) VALUES (2, 'Debito') 
+ON DUPLICATE KEY UPDATE nome = VALUES(nome);
+
+INSERT INTO tipos_movimentacao (nome) VALUES 
+('Rendimento'),
+('Transferência - Liquidação'),
+('Dividendo'),
+('Juros Sobre Capital Próprio'),
+('Atualização'),
+('Direitos de Subscrição - Não'),
+('Cessão de Direitos'),
+('Cessão de Direitos - Solicit'),
+('Direito de Subscrição')
+ON DUPLICATE KEY UPDATE nome = VALUES(nome);

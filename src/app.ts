@@ -1,21 +1,15 @@
-import express from "express";
-// import db from "./config/dbConnect.js";
-import manipuladorDeErros from "./middlewares/manipuladorDeErros.js";
-import routes from "./routes/index.js";
+import express from 'express';
 
-/*
-db.on("error", console.log.bind(console, 'Erro de conexão'))
-db.once("open", () => {
-  console.log('conexão com o banco feita com sucesso')
-})
-*/
+import cors from 'cors';
+
+import movimentacoes from './routes/movimentacoes.routes';
 
 const app = express();
 
+app.use(cors());
+
 app.use(express.json());
 
-routes(app);
-
-app.use(manipuladorDeErros);
+app.use('/api', movimentacoes);
 
 export default app;
